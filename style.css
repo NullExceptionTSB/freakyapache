@@ -1,0 +1,33 @@
+body {
+    font-family: monospace;
+    background-color: black;
+    overflow:hidden;
+    color: #00FF00;
+}
+h1, h2 {
+    text-align: center;
+    margin-bottom: 0px;
+    padding-bottom: 0px;
+    margin-top: 0px;
+    padding-top: 0px;
+}
+table {
+    width: 100vw;
+    
+}
+a:link, a:hover {
+    color: #00FF00;
+}
+a:visited{
+    color: #00AA00;
+}
+a:active {
+    color: #005500;
+}
+
+footer {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    text-align: right;
+}
