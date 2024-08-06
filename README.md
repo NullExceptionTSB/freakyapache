@@ -5,7 +5,7 @@ Ultra-Simple web app for HTB purpouses.
 HTTP utility server for hackthebox purpouses.
 
 ## What are the current features
-You can serve and upload files. That's it.
+You can serve and upload files. There's also an LDAPSearch command creator.
 
 ## How do I serve files?
 Put them in the same directory as index.php. You can also blacklist files from being listed by adding them to the $file_blacklist variable
