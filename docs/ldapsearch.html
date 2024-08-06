@@ -1,1 +1,232 @@
-tbd
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <link rel="stylesheet" href="../style.css">
+        <title>FreakyApache - ldapsearch</title>
+        <meta name="darkreader-lock">
+
+        <style>
+            input {
+                font-family: monospace;
+            }
+            #output {
+                width: 100%;
+            }
+            #filter {
+                width: 100%;
+            }
+            .spacer {
+                width: 64px;
+                height: 64px;
+            }
+            table {
+                white-space: nowrap;
+                overflow:auto;
+            }
+            td {
+
+                padding-right: 32px;
+            }
+            table td:last-child {
+                width: 100%;
+            }
+
+            thead tr {
+                background-color: #00FF00;
+                color:#000000;
+            }
+        </style>
+    </head>
+    <body>
+        <h1>😈 Freaky Apache2 - ldapsearch Cheatsheet 😈</h1>
+        <h2>Don't ask what webserver I'm using 😈</h2>
+
+        <div>
+            <table>
+                <thead>
+                    <tr>
+                        <td colspan="4">Basics</td>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><label for="ip">DC IP address</label></td>
+                        <td><input type="text" id="ip"></td>
+                        <td><label for="bind">Bind Type</label></td>
+                        <td>
+                            <select id="bind">
+                                <option value="anon">Anonymous</option>
+                                <option value="pwd">Username/Password</option>
+                                <option value="sasl">SASL GSSAPI</option>
+                                <option value="krb">Kerberos</option>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><label for="dc">Base DN</label></td>
+                        <td><input type="text" id="dc"></td>
+                        <td><label for="tls">Use TLS</label></td>
+                        <td><input type="checkbox" id="tls"></td>
+                    </tr>
+                    <tr>
+                        <td><label for="filter">Filter</label></td>
+                        <td colspan="2"><input type="text" id="filter"></td>
+                        <td></td>
+                    </tr>
+                    <tr><td colspan="4"><div class="spacer"></div></td></tr>
+                </tbody>
+            </table>
+
+            <table id="auth-pwd" hidden>
+                <thead>
+                    <tr>
+                        <td colspan="4">Authentication (PWD)</td>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><label for="username">Bind DN or SAM Name</label></td>
+                        <td><input type="text" id="username"></td>
+                        <td><label for="password">Password (empty for prompt)</label></td>
+                        <td><input type="text" id="password"></td>
+                    </tr>
+                    <tr><td colspan="4"><div class="spacer"></div></td></tr>
+                </tbody>
+            </table>
+
+            <table id="auth-sasl" hidden>
+                <thead>
+                    <tr>
+                        <td colspan="4">Authentication (SASL)</td>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><label for="realm">SASL Realm</label></td>
+                        <td><input type="text" id="realm"></td>
+                        <td><label for="authcid">Authentication identity</label></td>
+                        <td><input type="text" id="authcid"></td>
+                    </tr>
+                    <tr>
+                        <td><label for="authzid">Authorization identity (optional)</label></td>
+                        <td><input type="text" id="authzid"></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr><td colspan="4"><div class="spacer"></div></td></tr>
+                </tbody>
+            </table>
+
+            <table>
+                <tbody>
+                    <tr>
+                        <td>
+                            <label for="output">ldapsearch command</label>
+                        </td>
+                        <td>
+                            <input type="text" id="output" readonly>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <footer>
+            <p>© 2024 NullException. <a href="https://unlicense.org/">No Rights Reserved.</a></p>
+        </footer>
+
+        <script>
+            const ip = document.getElementById("ip");
+            const dc = document.getElementById("dc");
+            const bind = document.getElementById("bind");
+            const tls = document.getElementById("tls");
+            const filter = document.getElementById("filter");
+
+            const output = document.getElementById("output");
+
+            const pwd_uname = document.getElementById("username");
+            const pwd_pass = document.getElementById("password");
+
+            const sasl_realm = document.getElementById("realm");
+            const sasl_authcid = document.getElementById("authcid");
+            const sasl_authzid = document.getElementById("authzid");
+
+            const auth_pwd = document.getElementById("auth-pwd");
+            const auth_sasl = document.getElementById("auth-sasl");
+
+            var bindstring = "-x";
+
+            function bind_changed() {
+                switch (bind.value) {
+                    default:
+                    case "krb":
+                    case "anon":
+                        auth_pwd.hidden = true;
+                        auth_sasl.hidden = true;
+                        break;
+                    case "pwd":
+                        auth_pwd.hidden = false;
+                        auth_sasl.hidden = true;
+                        break;
+                    case "sasl":
+                        auth_pwd.hidden = true;
+                        auth_sasl.hidden = false;
+                        break;
+                }
+                refresh();
+            }
+
+            function construct_bind_string() {
+                switch (bind.value) {
+                    case "anon":
+                        bindstring = "-x";
+                        break;
+                    case "krb":
+                        bindstring = "-Y GSSAPI";
+                        break;
+                    case "sasl":
+                        var zidstring = "";
+                        if (sasl_authzid.value)
+                            zidstring = ` -X ${sasl_authzid.value}`;
+                        bindstring = `-Y GSSAPI -U ${sasl_authcid.value}${zidstring}`;
+                        break;
+                    default:
+                        var pstring = "-W";
+                        if (pwd_pass.value) 
+                            pstring = `-w ${pwd_pass.value}`
+                        bindstring = `-D ${pwd_uname.value} ${pstring}`;
+                        break;
+                }
+            }
+
+            function refresh() {
+                construct_bind_string();
+
+                var uri = "";
+                if (tls.checked) uri = "ldaps://";
+                else uri = "ldap://"
+                
+                uri += ip.value;
+
+                output.value = `ldapsearch ${bindstring} -H ${uri} -b ${dc.value} "${filter.value}"`
+            }
+
+            ip.addEventListener("input", refresh);
+            dc.addEventListener("input", refresh);
+            bind.addEventListener("input", bind_changed);
+            tls.addEventListener("input", refresh);
+            filter.addEventListener("input", refresh);
+
+            pwd_uname.addEventListener("input", refresh);
+            pwd_pass.addEventListener("input", refresh);
+
+            sasl_authcid.addEventListener("input", refresh);
+            sasl_authzid.addEventListener("input", refresh);
+            sasl_realm.addEventListener("input", refresh);
+            
+            bind_changed();
+            refresh();
+        </script>
+    </body>
+</html>

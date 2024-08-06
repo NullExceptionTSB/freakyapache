@@ -14,12 +14,11 @@ $tools = [
 
 $files = [];
 ?>
-
-
-
-<html>
+<!DOCTYPE html>
+<html lang="en">
     <head>
         <meta charset="utf-8">
+        <title>FreakyApache</title>
         <link rel="stylesheet" href="style.css"> 
     </head>
     <body>
@@ -56,8 +55,10 @@ $files = [];
             }
             ?>
         </table>
+
+        <footer>
+            <p>© 2024 NullException. <a href="https://unlicense.org/">No Rights Reserved.</a></p>
+        </footer>
     </body>
-    <footer>
-            <p>© 2024 NullException. <a href='https://unlicense.org/'>No Rights Reserved.</a></p>
-    </footer>
+
 </html>

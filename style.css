@@ -25,6 +25,11 @@ a:active {
     color: #005500;
 }
 
+input[type=text]{
+    background-color: black;
+    color: #00FF00;
+}
+
 footer {
     position: absolute;
     bottom: 0;
