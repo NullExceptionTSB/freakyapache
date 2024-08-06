@@ -4,7 +4,7 @@
     Header('X-Powered-By: EvilPHP');
 
 $file_blacklist = [
-    '.', '..', '.htaccess', 'justupload.php', 'upload', 'docs', 'index.php', 'style.css', 'motd.txt', '.git'
+    '.', '..', '.htaccess', 'justupload.php', 'upload', 'docs', 'index.php', 'style.css', 'motd.txt', '.git', 'favicon.ico'
 ];
 
 $tools = [
