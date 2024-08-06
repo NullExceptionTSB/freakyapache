@@ -20,6 +20,8 @@ $files = [];
         <meta charset="utf-8">
         <title>FreakyApache</title>
         <link rel="stylesheet" href="style.css"> 
+        <link rel="shortcut icon" href="favicon.ico">
+        <meta name="darkreader-lock">
     </head>
     <body>
         <h1>😈 Freaky Apache2 😈</h1>
