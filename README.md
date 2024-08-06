@@ -12,6 +12,7 @@ Put them in the same directory as index.php. You can also blacklist files from b
 
 ## How do I upload files?
 POST justupload.php
+
 The file will be uploaded into the upload/ directory with the same name as the unix timestamp of when it was uploaded.
 
 **It is up to the end user to secure their webserver configuration. No effort to do this has been made in this app. If you can't secure your webserver then you don't need this app.**
