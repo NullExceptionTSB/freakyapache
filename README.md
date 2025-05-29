@@ -1,4 +1,6 @@
 # FreakyApache
+## Don't ask what webserver I'm using 😈
+
 Ultra-Simple web app for HTB purpouses.
 
 ## What is this for
